@@ -1,0 +1,11 @@
+name: shiny
+title:
+username:
+account: abigail-horn
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 6041157
+bundleId: 5775704
+url: https://abigail-horn.shinyapps.io/shiny/
+when: 1649362432.12538
+lastSyncTime: 1649362432.12541

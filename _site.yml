@@ -5,11 +5,11 @@ navbar:
   left:
     - text: "Home"
       href: index.html
-    - text: "Pivot App"
-      href: https://abigail-horn.shinyapps.io/pivot-deploy2/
+    - text: "Dashboard"
+      href: https://abigail-horn.shinyapps.io/shiny/
   right:
     - icon: fa-github fa-lg
-      href: https://github.com/abigailhorn/RESPOND
+      href: https://github.com/AbigailHorn/cancerNavigator
 output:
   html_document:
     theme: cosmo

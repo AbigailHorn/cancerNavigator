@@ -79,10 +79,12 @@ knitr::opts_chunk$set(
 ```
 
 ```{r}
-navigator.dir = path("/Volumes/GoogleDrive/Shared drives/Disparities Navigator")
-d <- read.csv(here::here(navigator.dir, "LAC_AAIRs_bySiteSex5YearRangeRaceEth_20002019_03FEB22.csv"), na.strings = c("NA", "~"))
-d$csp_race_mod <- recode_factor(d$csp_race_mod, "South Asian (Indian/Pakistani/Sri Lankan/Bangladesh/etc)" = "South Asian")
-d$csp_race_mod <- factor(d$csp_race_mod, levels=c(sort(levels(d$csp_race_mod), decreasing=F)))
+# navigator.dir = path("/Volumes/GoogleDrive/Shared drives/Disparities Navigator")
+# d <- read.csv(here::here(navigator.dir, "LAC_AAIRs_bySiteSex5YearRangeRaceEth_20002019_03FEB22.csv"), na.strings = c("NA", "~"))
+# d$csp_race_mod <- recode_factor(d$csp_race_mod, "South Asian (Indian/Pakistani/Sri Lankan/Bangladesh/etc)" = "South Asian")
+# d$csp_race_mod <- factor(d$csp_race_mod, levels=c(sort(levels(d$csp_race_mod), decreasing=F)))
+# write_rds(d, here::here("data/d.rds"))
+d = readRDS(here::here("data/d.rds"))
 
 ```
 
@@ -197,38 +199,6 @@ d %>% filter(SEERCODE %in% d.top, sex == "Male and Female", YEARRANGE == "All (2
 ```
 
 
-# Heatmaps
-
-## Races X years 
-```{r}
-dmat = d %>% filter(SEERCODE == "All Cancer Sites", sex == "Male and Female") %>% select(c(YEARRANGE, csp_race_mod, aair)) %>% pivot_wider(names_from = YEARRANGE, values_from = aair) %>% as.data.frame()
-rownames(dmat) = dmat$csp_race_mod
-dmat$csp_race_mod = NULL
-dmat = as.matrix(dmat)
-
-plot_ly(x=colnames(dmat), y=rownames(dmat),
-        z=~dmat,
-        type="heatmap",
-        showscale=T)
-```
-
-
-## Top N sites x races
-```{r}
-dmat = d %>% filter(YEARRANGE == "All (2000-2019)", sex == "Male and Female", SEERCODE %in% d.top) %>% 
-  select(c(SEERCODE, csp_race_mod, aair)) %>% 
-  filter(SEERCODE!="All Cancer Sites") %>% 
-  pivot_wider(names_from = csp_race_mod, values_from = aair) %>% 
-  as.data.frame()
-rownames(dmat) = dmat$SEERCODE
-dmat$SEERCODE = NULL
-dmat = as.matrix(dmat)
-
-plot_ly(x=colnames(dmat), y=rownames(dmat),
-        z=~dmat,
-        type="heatmap",
-        showscale=T)
-```
 
 
 # Line plots
@@ -243,6 +213,7 @@ g1 = ggplot(d.all, aes(x = YEARRANGE, y = aair, group=csp_race_mod, color = csp_
                              paste("Cases: ", cases, sep=""), 
                                        paste(" Age-adjusted IR (95% CI): ", aair, " (",lclair, ", ",uclair,")", sep=""),sep = "<br>"))) + 
   geom_line(size = .5) + geom_point(size = 1.5, alpha = 0.5) + 
+  labs(color = "User-Selected Races", title = paste0("All Cancer Sites", " Over Time, User Selected Races"), x = "Year Range", y = "Age-Adjusted Incidence Rate") +
   #geom_errorbar(aes(ymin=lclair, ymax=uclair), width=2,position=position_dodge(0.1)) +
   theme_ipsum(axis_text_size = 15, axis_title_size = 15)
 g2<-ggplotly(g1, tooltip = "text")
@@ -282,6 +253,43 @@ g1 = d %>% filter(sex == "Male and Female",csp_race_mod == "All Races/Ethnicitie
   theme_ipsum(axis_text_size = 15, axis_title_size = 15)
 ggplotly(g1, tooltip = "text")
 
+```
+
+
+
+
+
+# Heatmaps
+
+## Races X years 
+```{r}
+dmat = d %>% filter(SEERCODE == "All Cancer Sites", sex == "Male and Female") %>% select(c(YEARRANGE, csp_race_mod, aair)) %>% pivot_wider(names_from = YEARRANGE, values_from = aair) %>% as.data.frame()
+rownames(dmat) = dmat$csp_race_mod
+dmat$csp_race_mod = NULL
+dmat = as.matrix(dmat)
+
+plot_ly(x=colnames(dmat), y=rownames(dmat),
+        z=~dmat,
+        type="heatmap",
+        showscale=T)
+```
+
+
+## Top N sites x races
+```{r}
+dmat = d %>% filter(YEARRANGE == "All (2000-2019)", sex == "Male and Female", SEERCODE %in% d.top) %>% 
+  select(c(SEERCODE, csp_race_mod, aair)) %>% 
+  filter(SEERCODE!="All Cancer Sites") %>% 
+  pivot_wider(names_from = csp_race_mod, values_from = aair) %>% 
+  as.data.frame()
+rownames(dmat) = dmat$SEERCODE
+dmat$SEERCODE = NULL
+dmat = as.matrix(dmat)
+
+plot_ly(x=colnames(dmat), y=rownames(dmat),
+        z=~dmat,
+        type="heatmap",
+        showscale=T)
 ```
 
 
