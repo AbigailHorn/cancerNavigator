@@ -130,13 +130,14 @@ d %>% filter(SEERCODE %in% d.top, sex == "Male and Female", csp_race_mod == "All
   theme_ipsum(axis_text_size = 15, axis_title_size = 15)
 ```
 
-## Top N sites, selected race
+## Top N sites, Black ethnicity
 ```{r}
 d %>% filter(SEERCODE %in% d.top, sex == "Male and Female", csp_race_mod == "Black", YEARRANGE == "All (2000-2019)") %>% 
   ggplot(aes(x = reorder(SEERCODE, aair), y=aair, fill=SEERCODE)) +
   geom_bar(position=position_dodge(width=.8), stat="identity", width=.5, colour='black') +
   geom_errorbar(aes(ymin=lclair, ymax=uclair), width=.2,position=position_dodge(.8)) +  
   coord_flip() + 
+  #labs(title = "Race/Ethnicity: Black, Top 10 Cancers") + 
   theme_ipsum(axis_text_size = 15, axis_title_size = 15)
 ```
 
