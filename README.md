@@ -1,3 +1,3 @@
 Cancer Disparities Navigator Visualizations
 
-Website: https://abigailhorn.github.io/cancerNavigator/
+View on website: https://abigailhorn.github.io/cancerNavigator/

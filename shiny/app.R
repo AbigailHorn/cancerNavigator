@@ -58,7 +58,8 @@ library(data.table)
 # d <- read.csv(here::here(navigator.dir, "LAC_AAIRs_bySiteSex5YearRangeRaceEth_20002019_03FEB22.csv"), na.strings = c("NA", "~"))
 # d$csp_race_mod <- recode_factor(d$csp_race_mod, "South Asian (Indian/Pakistani/Sri Lankan/Bangladesh/etc)" = "South Asian")
 # d$csp_race_mod <- factor(d$csp_race_mod, levels=c(sort(levels(d$csp_race_mod), decreasing=F)))
-d = readRDS(here::here("data/d.rds"))
+d2 = readRDS("d.rds")
+d = d2
 
 ## Get arranged list of cancer sites
 sites_arrange = d %>% filter(sex == "Male and Female",csp_race_mod == "All Races/Ethnicities", YEARRANGE == "All (2000-2019)") %>% 
