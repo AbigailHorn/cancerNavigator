@@ -82,12 +82,10 @@ ui = dashboardPage(skin = 'blue',
                    dashboardSidebar(
                      width = 300,
                      sidebarMenu(
+                       menuItem("About", tabName = "about", icon = icon("question-circle")),
                        menuItem("Cancer Trends", tabName = "scatter1", icon = icon("chart-line")),
                        menuItem("Cancers by Sex, Race", tabName = "bars1", icon = icon("chart-bar")) #,
-                       #menuItem("Heatmaps", tabName = "hmap", icon = icon("th")),
-                       # menuItem("Case Counts and Proportions", tabName = "cc", icon = icon("th"))
-                       # menuItem("About", tabName = "about", icon = icon("th"))
-                       
+                      
                      )
                    ), # End Sidebard
                    
@@ -95,6 +93,27 @@ ui = dashboardPage(skin = 'blue',
                    dashboardBody(
                      tabItems(
                        
+                       
+                       tabItem(tabName = "about", 
+                               fluidRow(
+                                 box(title = "Cancer Disparities Navigator", width = 12, 
+                                     
+                                     strong("Case Selection:"), br(),
+                                     "Los Angeles County", br(),
+                                     "Years: 2000-2019", br(),
+                                     "Sex: Male or Female", br(),
+                                     "Cancer stage: All", br(),
+                                     "Behavior: All", br(),
+                                     "Age-Adjusted Incidence Rates", br(), br(),
+                                     strong("Notes"), br(),
+                                     "Case counts are based on tumor-level records, patients diagnosed with a second tumor are recounted.", br(),
+                                     "Cancer site was determined using SEER Site Recodes ICD-O-3/WHO 2008 (SEERWHO).", br(),
+                                     "Rates standardized to the US 2000 Standard Population (18 age groups).", br(),
+                                     "Population denominators were calculated using the US Decennial Census Population for LA County for 2000 and 2010.", br(),
+                                     "Interim years (2001-09) were interpolated and subsequent years (2011-2019) were extrapolated.", br(),
+                                     "Race/Ethnicity-specific population counts are averages of the Census 'Alone' and 'Alone or in Combination' counts.", br()
+                                     
+                                 ))),
                        # First tab content
                        tabItem(tabName = "scatter1",
                                fluidRow(
@@ -268,7 +287,7 @@ server <- function(input, output) {
       geom_smooth(aes(YEARRANGE, aair), method = "lm", se = F,  size = .5) +
       geom_point(size = 1.5, alpha = 0.5) + 
       geom_errorbar(aes(ymin=lclair, ymax=uclair), width=.5,position=position_dodge(0.1)) +
-      labs(color = "User-Selected Cancer Sites", title = paste0("Sex: ", input$sex_select_trendSite,  ", Race/ethnicity: ", input$race_select_trendSite, ", User Selected Cancer Sites"), x = "Year Range", y = "Age-Adjusted Incidence Rate") +
+      labs(color = "User-Selected Cancer Sites", title = paste0("Sex: ", input$sex_select_trendSite,  ", Race/ethnicity: ", input$race_select_trendSite, ", User Selected Cancers"), x = "Year Range", y = "Age-Adjusted Incidence Rate") +
       #scale_color_viridis(discrete = TRUE, option="turbo") +
       theme_ipsum(axis_text_size = 15, axis_title_size = 15)
     ggplotly(g1, tooltip = "text")
@@ -305,9 +324,9 @@ server <- function(input, output) {
     )) +
       geom_bar(position=position_dodge(width=.8), stat="identity", width=.7, colour='black') +
       geom_errorbar(aes(ymin=lclair, ymax=uclair), width=.2,position=position_dodge(.8)) +
-      labs(fill = "User-Selected Race/Ethnicity", title = paste0("Sex: ", input$sex_select_barSite,  ", User Selected Cancer Site Comparison by Race/Ethnicity"), x = "", y = "Age-Adjusted Incidence Rate") +
+      labs(fill = "User-Selected Race/Ethnicity", title = paste0(input$sex_select_barSite,  " Cancer by Race/Ethnicity, 2000-2019"), x = "", y = "Age-Adjusted Incidence Rate") +
       coord_flip() + 
-      theme_ipsum(axis_text_size = 15, axis_title_size = 15)
+      theme_ipsum(axis_text_size = 15, axis_title_size = 10)
     
     ggplotly(b1, tooltip = "text")
 
@@ -343,9 +362,9 @@ server <- function(input, output) {
     )) +
       geom_bar(position=position_dodge(width=.8), stat="identity", width=.7, colour='black') +
       geom_errorbar(aes(ymin=lclair, ymax=uclair), width=.2,position=position_dodge(.8)) +
-      labs(fill = "User-Selected Cancer Sites", title = paste0("Sex: ", input$sex_select_barSite,  ", User Selected Race/Ethnicity Comparison by Cancer"), x = "", y = "Age-Adjusted Incidence Rate") +
+      labs(fill = "User-Selected Cancer Sites", title = paste0(input$sex_select_barSite,  " Race/Ethnicity by Cancer, 2000-2019"), x = "", y = "Age-Adjusted Incidence Rate") +
       coord_flip() + 
-      theme_ipsum(axis_text_size = 15, axis_title_size = 15)
+      theme_ipsum(axis_text_size = 15, axis_title_size = 10)
     
     ggplotly(b1, tooltip = "text")
     

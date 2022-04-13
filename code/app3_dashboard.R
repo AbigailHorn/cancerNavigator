@@ -81,6 +81,7 @@ ui = dashboardPage(skin = 'blue',
   dashboardSidebar(
     width = 300,
     sidebarMenu(
+      menuItem("About", tabName = "about", icon = icon("question-circle")),
       menuItem("Cancer Trends", tabName = "scatter1", icon = icon("chart-line")),
       menuItem("Cancers by Sex, Race", tabName = "bars1", icon = icon("chart-bar")) #,
       #menuItem("Heatmaps", tabName = "hmap", icon = icon("th")),
@@ -94,6 +95,27 @@ ui = dashboardPage(skin = 'blue',
   dashboardBody(
     tabItems(
       
+      
+      tabItem(tabName = "about", 
+              fluidRow(
+                box(title = "Cancer Disparities Navigator", width = 12, status = 'danger',
+                    
+                    strong("Case Selection:"), br(),
+                    "Los Angeles County", br(),
+                    "Years: 2000-2019", br(),
+                    "Sex: Male or Female", br(),
+                    "Cancer stage: All", br(),
+                    "Behavior: All", br(),
+                    "Age-Adjusted Incidence Rates", br(), br(),
+                    strong("Notes"), br(),
+                    "Case counts are based on tumor-level records, patients diagnosed with a second tumor are recounted.", br(),
+                    "Cancer site was determined using SEER Site Recodes ICD-O-3/WHO 2008 (SEERWHO).", br(),
+                    "Rates standardized to the US 2000 Standard Population (18 age groups).", br(),
+                    "Population denominators were calculated using the US Decennial Census Population for LA County for 2000 and 2010.", br(),
+                    "Interim years (2001-09) were interpolated and subsequent years (2011-2019) were extrapolated.", br(),
+                    "Race/Ethnicity-specific population counts are averages of the Census 'Alone' and 'Alone or in Combination' counts.", br()
+                
+                ))),
       # First tab content
       tabItem(tabName = "scatter1",
               fluidRow(
