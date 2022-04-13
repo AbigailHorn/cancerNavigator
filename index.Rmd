@@ -115,6 +115,30 @@ d %>% filter(SEERCODE =="All Cancer Sites", sex == "Male and Female") %>%
 
 ```
 
+## Races X years
+```{r}
+
+## Grouped barplot groups = races and years + errorbars 
+d %>% filter(SEERCODE %in% d.top, sex == "Male and Female", YEARRANGE=="All (2000-2019)") %>% 
+  ggplot(aes(x=reorder(csp_race_mod,aair), y=aair, fill=SEERCODE)) +
+  geom_bar(position=position_dodge(width=.8), stat="identity", width=.7, colour='black') +
+  geom_errorbar(aes(ymin=lclair, ymax=uclair), width=.2,position=position_dodge(.8)) +
+  coord_flip() + 
+  theme_ipsum(axis_text_size = 15, axis_title_size = 15)
+
+
+
+    d.all = d %>% filter(SEERCODE %in% d.top, sex == "Male and Female", YEARRANGE == "All (2000-2019)") %>% 
+      filter(csp_race_mod %in% c("All Races/Ethnicities", "Hispanic White", "Non-Hispanic White", "Black"))
+    
+    ggplot(d.all, aes(x=(csp_race_mod), y=aair, fill=SEERCODE)) +
+      geom_bar(position=position_dodge(width=.8), stat="identity", width=.7, colour='black') +
+      geom_errorbar(aes(ymin=lclair, ymax=uclair), width=.2,position=position_dodge(.8)) +
+      coord_flip() + 
+      theme_ipsum(axis_text_size = 15, axis_title_size = 15)
+
+```
+
 
 # Single barplot
 
@@ -220,6 +244,57 @@ g1 = ggplot(d.all, aes(x = YEARRANGE, y = aair, group=csp_race_mod, color = csp_
 g2<-ggplotly(g1, tooltip = "text")
 g2
 ```
+
+
+
+## With trendline
+
+```{r}
+
+d.all = d %>% filter(SEERCODE == "All Cancer Sites", sex == "Male and Female", YEARRANGE != "All (2000-2019)")
+d.all$yearNum = d.all$YEARRANGE
+d.all$yearNum = unclass(d.all$yearNum)
+# d.all %>% 
+#   plot_ly(x=~yearNum, y=~aair, type = 'scatter', mode='lines', color=~csp_race_mod)
+# 
+# fit <- lm(aair ~ yearNum, data = d.all)
+
+d2 = data.table(d.all)
+d3 = d2[,as.list(coef(lm(aair~yearNum))),by=csp_race_mod]
+d4 = merge(d2, d3, by="csp_race_mod")
+d4 = data.frame(d4)
+
+g1 = ggplot(d4, aes(x = YEARRANGE, y = aair, group=csp_race_mod, color = csp_race_mod,
+                           text=paste( 
+                             paste("Cancer site: ", SEERCODE),
+                             paste("Race/ethnicity: ", csp_race_mod),
+                             paste("Cases: ", cases, sep=""), 
+                             paste(" Age-adjusted IR (95% CI): ", aair, " (",lclair, ", ",uclair,")", sep=""),
+                             paste("Trend: ", round(yearNum.y/5,2), "units change in rate per year" ) ,
+                             sep = "<br>"))) + 
+  geom_smooth(aes(YEARRANGE, aair), method = "lm", se = F, colour =  "black", size = .2) +
+  geom_point(size = .5) + geom_point(size = 1.5, alpha = 0.5) + 
+  labs(color = "User-Selected Races", title = paste0("All Cancer Sites", " Over Time, User Selected Races"), x = "Year Range", y = "Age-Adjusted Incidence Rate") +
+  #geom_errorbar(aes(ymin=lclair, ymax=uclair), width=2,position=position_dodge(0.1)) +
+  theme_ipsum(axis_text_size = 15, axis_title_size = 15)
+g1
+
+g2<-ggplotly(g1, tooltip = c("text")) 
+g2
+
+
+```
+
+
+
+
+
+
+
+
+
+
+
 
 ## Races over time, specific cancer site: Breast
 ```{r}
