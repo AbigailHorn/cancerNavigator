@@ -79,7 +79,7 @@ d = na.omit(d)
 ui = dashboardPage(skin = 'blue',
                    dashboardHeader(title = "Cancer Disparities Navigator", titleWidth = 300),
                    
-                   ## Sidebar content
+                  ## Sidebar content
                    dashboardSidebar(
                      width = 300,
                      sidebarMenu(
@@ -284,7 +284,7 @@ server <- function(input, output) {
   
   ##############################################
   
-  
+ 
   
   
   
